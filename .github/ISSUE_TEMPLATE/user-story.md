@@ -2,7 +2,7 @@
 name: User Story
 about: Create a user story to plan and track development
 title: "[Story] "
-labels: enhancement
+labels: Story
 assignees: ''
 
 ---
