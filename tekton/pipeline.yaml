@@ -18,6 +18,9 @@ spec:
     - name: branch
       type: string
       description: The git branch to checkout
+    - name: build-image
+      description: The name of the image to build
+      type: string
   workspaces:
     - name: pipeline-workspace
   tasks:
@@ -43,7 +46,11 @@ spec:
         - name: image
           value: python:3.9-slim
         - name: args
-          value: "--count --max-complexity=10 --max-line-length=127 --statistics"
+          value:
+            - "--count"
+            - "--max-complexity=10"
+            - "--max-line-length=127"
+            - "--statistics"
       runAfter:
         - clone
 
@@ -60,3 +67,17 @@ spec:
           value: "-v --with-spec --spec-color"
       runAfter:
         - clone
+
+    - name: build
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: "$(params.build-image)"
+      runAfter:
+        - lint
+        - tests
